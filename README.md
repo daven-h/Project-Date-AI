@@ -1,0 +1,1 @@
+An AI agent that would allow people to get date ideas for their partners. The app should be able to read in their partners interests and then based on their location suggest date ideas and then book the date/logistics for them using Artificial Intelligence models. As the user increases the radius of the map the AI can suggest date ideas at further locations. 
