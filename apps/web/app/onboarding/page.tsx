@@ -1,8 +1,15 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { submitOnboarding } from '@/lib/api'
+
 
 export default function OnboardingPage() {
+
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
     const [formData, setFormData] = useState({
         interests: '',
@@ -11,7 +18,7 @@ export default function OnboardingPage() {
         budget: ''
     })
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
 
       // Check required fields
@@ -21,8 +28,33 @@ export default function OnboardingPage() {
         return;
       }
 
+      setIsLoading(true)
+      setError('')
       console.log('Form submitted:', formData)
+
+       try {
+      // Calling the API
+
+      const result = await submitOnboarding({
+        interests: formData.interests,
+        city: formData.city,
+        budget: formData.budget,
+        dietary: formData.dietary || undefined,
+      });
+
+      console.log('Profile created: ', result);
+
+      // Redirect to dashboard upon success
+      router.push('/dashboard')
+
+    }catch(err){
+      console.log('Error submitting onboarding', err);
+      setError('Failed to save your preferences. Please try again.');
+    }finally{
+      setIsLoading(false);
     }
+   
+  }
 
   return (
     <main className="min-h-screen bg-gray-50 py-12">
@@ -34,6 +66,12 @@ export default function OnboardingPage() {
           <p className="text-gray-600 mb-8">
             Tell us about your partner's interests and we'll suggest amazing date ideas.
           </p>
+
+          {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+        {error}
+         </div>
+        )}
           
         <form onSubmit={handleSubmit} className="space-y-6">
       {/* Interests Field */}
@@ -104,13 +142,15 @@ export default function OnboardingPage() {
     />
     </div>
 
-    {/* Submit Button */}
-
-    <div className="pt-4">
-      <button type="submit" className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+   {/* Submit Button */}
+<div className="pt-4">
+  <button
+    type="submit"
+    disabled={isLoading}
+    className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
       >
-        Find Date Ideas
-      </button>
+    {isLoading ? 'Saving...' : 'Find Date Ideas'}
+    </button>
     </div>
       </form>
         </div>
