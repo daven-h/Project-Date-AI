@@ -13,7 +13,7 @@ export async function submitOnboarding(data: {
     const response = await fetch(`${API_URL}/onboarding`, {
         method: 'POST',
         headers: {
-            'Content-type': 'application-json'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(data),
     })

@@ -24,6 +24,7 @@ model User {
   
   // Relations
   profile   Profile?
+  plan      Plan[]
 }
 
 model Profile {
@@ -39,5 +40,26 @@ model Profile {
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Plan {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Plan details
+  title       String
+  description String?
+  activities  Json     // Array of activities
+  duration    String
+  distance    Float
+  priceRange  String
+  reason      String   // Why this was suggested
+  
+  // Metadata
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId])
 }
 

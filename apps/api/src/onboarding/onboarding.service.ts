@@ -26,4 +26,22 @@ export class OnboardingService {
 
     return user;
   }
+
+
+  async getProfile(userid: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userid,
+      },
+      include: {
+        profile: true,
+      },
+    });
+
+    if (!user || !user.profile) {
+      throw new Error('Profile not found');
+    }
+
+    return user;
+  }
 }

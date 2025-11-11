@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Logger } from '@nestjs/common';
+import { Body, Controller, Post, Get, Param, Logger } from '@nestjs/common';
 import { OnboardingService } from './onboarding.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 
@@ -13,5 +13,10 @@ export class OnboardingController {
     this.logger.log('Type of body:', typeof createProfileDto);
     this.logger.log('Body keys:', Object.keys(createProfileDto || {}));
     return this.onboardingService.createProfile(createProfileDto);
+  }
+
+  @Get('profile/:userid')
+  async getProfile(@Param('userid') userid: string) {
+    return this.onboardingService.getProfile(userid);
   }
 }
