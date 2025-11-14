@@ -1,5 +1,19 @@
 const API_URL = 'http://localhost:4000';
 
+// API response type
+export interface ApiDatePlan {
+  id: string;
+  title: string;
+  description: string | null;
+  activities: string[];  // API returns array, not JSON
+  duration: string;
+  distance: number;
+  priceRange: string;
+  reason: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export async function submitOnboarding(data: {
     interests: string;
     city: string;
@@ -29,4 +43,36 @@ export async function submitOnboarding(data: {
     }
 
     return response.json()
+}
+
+
+export async function generateDatePlans(userId: string) {
+    const response = await fetch(`${API_URL}/plans/generate`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({userId}),
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to generate date plans');
+    }
+
+    return response.json();
+}
+
+export async function getUserDatePlans(userId: string) {
+    const response = await fetch(`${API_URL}/plans/user/${userId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to get user date plans');
+    }
+
+    return response.json();
 }

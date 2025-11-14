@@ -19,42 +19,52 @@ export default function OnboardingPage() {
     })
 
     const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-
-      // Check required fields
-
-      if (!formData.interests.trim() || !formData.city.trim() || !formData.budget.trim()){
-        alert("Please fill out all required fields")
-        return;
-      }
-
-      setIsLoading(true)
-      setError('')
-      console.log('Form submitted:', formData)
-
-       try {
-      // Calling the API
-
-      const result = await submitOnboarding({
-        interests: formData.interests,
-        city: formData.city,
-        budget: formData.budget,
-        dietary: formData.dietary || undefined,
-      });
-
-      console.log('Profile created: ', result);
-
-      // Redirect to dashboard upon success
-      router.push('/dashboard')
-
-    }catch(err){
-      console.log('Error submitting onboarding', err);
-      setError('Failed to save your preferences. Please try again.');
-    }finally{
-      setIsLoading(false);
-    }
-   
+  e.preventDefault();
+  
+  // Check required fields
+  if (!formData.interests.trim() || !formData.city.trim() || !formData.budget.trim()) {
+    alert("Please fill out all required fields");
+    return;
   }
+  
+  console.log('Form data before sending:', formData);
+  
+  setIsLoading(true);
+  setError('');
+  
+  try {
+    const payload = {
+      interests: formData.interests.trim(),
+      city: formData.city.trim(),
+      budget: formData.budget.trim(),
+      dietary: formData.dietary?.trim() || undefined,
+    };
+    
+    console.log('Payload being sent:', payload);
+    
+    // Call the API
+    const result = await submitOnboarding(payload);
+    
+    console.log('Profile created:', result);
+    
+    // Store the user ID in localStorage
+    localStorage.setItem('userId', result.id);
+    
+    // Redirect to dashboard on success
+    router.push('/dashboard');
+    
+  } catch (err) {
+    console.error('Error submitting onboarding:', err);
+    
+    const errorMessage = err instanceof Error 
+      ? err.message 
+      : 'Failed to save your preferences. Please try again.';
+    
+    setError(errorMessage);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <main className="min-h-screen bg-gray-50 py-12">

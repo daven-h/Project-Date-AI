@@ -1,8 +1,9 @@
 import { DatePlan } from '@/lib/mockData';
+import { ApiDatePlan as AP } from '@/lib/api';
 import Link from 'next/link'
 
 interface DatePlanCardProps {
-  plan: DatePlan;
+  plan: AP;
 }
 
 export default function DatePlanCard({ plan }: DatePlanCardProps) {

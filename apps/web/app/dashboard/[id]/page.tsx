@@ -1,4 +1,4 @@
-import { mockDatePlans } from '@/lib/mockData';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
 interface PlanDetailsPageProps {
@@ -7,33 +7,24 @@ interface PlanDetailsPageProps {
   }>;
 }
 
-export default async function PlanDetailsPage({ params }: PlanDetailsPageProps) {
-  // Await the params
-  const { id } = await params;
-  
-  // Temporary debugging
-  console.log('URL id:', id);
-  console.log('Available plan IDs:', mockDatePlans.map(p => p.id));
-  
-  // Find the plan that matches the ID from the URL
-  const plan = mockDatePlans.find(p => p.id === id);
-  
-  console.log('Found plan:', plan);
+async function getPlan(id: string) {
+  const response = await fetch(`http://localhost:4000/plans/${id}`, {
+    cache: 'no-store',
+  });
 
-  // If no plan found, show error
+  if (!response.ok) {
+    return null;
+  }
+
+  return response.json();
+}
+
+export default async function PlanDetailsPage({ params }: PlanDetailsPageProps) {
+  const { id } = await params;
+  const plan = await getPlan(id);
+
   if (!plan) {
-    return (
-      <main className="min-h-screen bg-gray-50 py-12">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Plan Not Found
-          </h1>
-          <p className="text-gray-600">
-            The date plan you're looking for doesn't exist.
-          </p>
-        </div>
-      </main>
-    );
+    notFound();
   }
 
   return (
@@ -61,6 +52,13 @@ export default async function PlanDetailsPage({ params }: PlanDetailsPageProps) 
           </div>
         </div>
 
+        {/* Description */}
+        {plan.description && (
+          <div className="bg-white rounded-lg shadow p-6 mb-8">
+            <p className="text-gray-700">{plan.description}</p>
+          </div>
+        )}
+
         {/* Why This Pick */}
         <div className="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-2">
@@ -76,7 +74,7 @@ export default async function PlanDetailsPage({ params }: PlanDetailsPageProps) 
           </h2>
           
           <div className="space-y-6">
-            {plan.activities.map((activity, index) => (
+            {Array.isArray(plan.activities) && plan.activities.map((activity: string, index: number) => (
               <div key={index} className="flex gap-4">
                 {/* Step Number */}
                 <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold">

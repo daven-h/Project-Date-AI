@@ -25,7 +25,7 @@ export class PlansService {
   }
 
   async generatePlans(userId: string) {
-    // Get user profile 
+    // Get user profile
 
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -35,6 +35,13 @@ export class PlansService {
     if (!user || !user.profile) {
       throw new NotFoundException('User or profile not found');
     }
+
+    // Delete old plans for this user before generating new ones
+    await this.prisma.plan.deleteMany({
+      where: { userId },
+    });
+
+    console.log(`Deleted old plans for user ${userId}`);
 
     // Generate suggestions using AI
 
