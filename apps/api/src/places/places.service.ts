@@ -55,15 +55,17 @@ export class PlacesService {
     }
   }
 
-  async searchRestaurants(location: string, dietary?: string) {
+  async searchRestaurants(location: string, dietary?: string, radius: number = 10000) {
     let query = 'restaurants';
     if (dietary) {
       query = `${dietary} restaurants`;
     }
-    return this.searchVenues(query, location);
+    console.log(`Searching for restaurants with radius ${radius} meters`);
+    return this.searchVenues(query, location, radius);
   }
 
-  async searchActivities(interests: string, location: string) {
-    return this.searchVenues(interests, location);
+  async searchActivities(interests: string, location: string, radius: number = 10000) {
+    console.log(`Searching for activities with radius ${radius} meters`);
+    return this.searchVenues(interests, location, radius);
   }
 }

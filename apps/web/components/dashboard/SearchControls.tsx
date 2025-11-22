@@ -3,13 +3,17 @@
 import { useState } from 'react';
 
 interface SearchControlsProps {
-  onSearch: () => void;
+  onSearch: (dateTime: string, radius: number) => void;
   isGenerating: boolean;
 }
 
 export default function SearchControls({ onSearch, isGenerating }: SearchControlsProps) {
   const [radius, setRadius] = useState(10);
   const [dateTime, setDateTime] = useState('');
+
+  const handleSearch = () => {
+    onSearch(dateTime, radius);
+  };
 
   return (
     <div className="bg-white rounded-lg shadow p-6 space-y-6">
@@ -54,7 +58,7 @@ export default function SearchControls({ onSearch, isGenerating }: SearchControl
 
       {/* Search Button */}
       <button 
-        onClick={onSearch}
+        onClick={handleSearch}
         disabled={isGenerating}
         className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
       >

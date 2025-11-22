@@ -2,11 +2,12 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useUser } from '@clerk/nextjs'
 import { submitOnboarding } from '@/lib/api'
 
 
 export default function OnboardingPage() {
-
+  const { user, isLoaded } = useUser();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -20,51 +21,65 @@ export default function OnboardingPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
-  
+
+  if (!user) {
+    setError('Please sign in first');
+    return;
+  }
+
   // Check required fields
   if (!formData.interests.trim() || !formData.city.trim() || !formData.budget.trim()) {
     alert("Please fill out all required fields");
     return;
   }
-  
+
   console.log('Form data before sending:', formData);
-  
+
   setIsLoading(true);
   setError('');
-  
+
   try {
     const payload = {
+      userId: user.id,  // Use Clerk user ID
       interests: formData.interests.trim(),
       city: formData.city.trim(),
       budget: formData.budget.trim(),
       dietary: formData.dietary?.trim() || undefined,
     };
-    
+
     console.log('Payload being sent:', payload);
-    
+
     // Call the API
     const result = await submitOnboarding(payload);
-    
+
     console.log('Profile created:', result);
-    
+
     // Store the user ID in localStorage
     localStorage.setItem('userId', result.id);
-    
+
     // Redirect to dashboard on success
     router.push('/dashboard');
-    
+
   } catch (err) {
     console.error('Error submitting onboarding:', err);
-    
-    const errorMessage = err instanceof Error 
-      ? err.message 
+
+    const errorMessage = err instanceof Error
+      ? err.message
       : 'Failed to save your preferences. Please try again.';
-    
+
     setError(errorMessage);
   } finally {
     setIsLoading(false);
   }
 };
+
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-gray-50 py-12">

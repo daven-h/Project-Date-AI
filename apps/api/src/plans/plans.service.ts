@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreatePlanDto } from './dto/create-plan.dto';
 import { AiService } from '../ai/ai.service';
+import { CreatePlanDto } from './dto/create-plan.dto';
 
 @Injectable()
 export class PlansService {
-  constructor(private prisma: PrismaService,
-    private AiService: AiService
+  constructor(
+    private prisma: PrismaService,
+    private aiService: AiService,
   ) {}
 
   async create(createPlanDto: CreatePlanDto) {
@@ -24,40 +25,41 @@ export class PlansService {
     });
   }
 
-  async generatePlans(userId: string) {
-    // Get user profile
-
+  async generatePlans(
+    userId: string, 
+    dateTime?: string, 
+    radius?: number,
+    userLocation?: { lat: number; lng: number },
+  ) {
+    console.log('Plans Service - Radius:', radius, 'UserLocation:', userLocation);
+    
+    // Get user's profile
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: { profile: true },
     });
 
     if (!user || !user.profile) {
-      throw new NotFoundException('User or profile not found');
+      throw new NotFoundException('User profile not found');
     }
 
-    // Delete old plans for this user before generating new ones
-    await this.prisma.plan.deleteMany({
-      where: { userId },
-    });
-
-    console.log(`Deleted old plans for user ${userId}`);
-
-    // Generate suggestions using AI
-
-    const aiResponse = await this.AiService.generateDateSuggestions({
+    // Generate suggestions with AI
+    const aiResponse = await this.aiService.generateDateSuggestions({
       interests: user.profile.interests,
       city: user.profile.city,
       budget: user.profile.budget,
       dietary: user.profile.dietary || undefined,
+      dateTime: dateTime,
+      radius: radius || 50,
+      userLocation: userLocation,
     });
 
-    // Saves all plans to database in parallel
+    // Save each plan to database
     const savedPlans = await Promise.all(
-      aiResponse.plans.map(async (plan: any) => 
+      aiResponse.plans.map((plan: any) =>
         this.prisma.plan.create({
           data: {
-            userId,
+            userId: userId,
             title: plan.title,
             description: plan.description,
             activities: plan.activities,
@@ -67,8 +69,8 @@ export class PlansService {
             reason: plan.reason,
           },
         }),
-    ),
-  );
+      ),
+    );
 
     return savedPlans;
   }

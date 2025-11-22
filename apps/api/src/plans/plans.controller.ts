@@ -12,10 +12,22 @@ export class PlansController {
   }
 
   @Post('generate')
-  async generate(@Body() body: {userId: string}){
-    return this.plansService.generatePlans(body.userId);
+  async generate(
+    @Body() body: { 
+      userId: string; 
+      dateTime?: string; 
+      radius?: number;
+      userLocation?: { lat: number; lng: number };
+    }
+  ) {
+    console.log('Received in controller:', body);
+    return this.plansService.generatePlans(
+      body.userId, 
+      body.dateTime, 
+      body.radius,
+      body.userLocation,
+    );
   }
-  
 
   @Get('user/:userId')
   async findAllByUser(@Param('userId') userId: string) {

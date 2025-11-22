@@ -15,6 +15,7 @@ export interface ApiDatePlan {
 }
 
 export async function submitOnboarding(data: {
+    userId: string;
     interests: string;
     city: string;
     budget: string;

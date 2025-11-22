@@ -1,45 +1,74 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateProfileDto } from './dto/create-profile.dto';
 
 @Injectable()
 export class OnboardingService {
   constructor(private prisma: PrismaService) {}
 
-  async createProfile(data: CreateProfileDto) {
+  async createProfile(data: {
+    userId: string;
+    interests: string;
+    city: string;
+    budget: string;
+    dietary?: string;
+  }) {
+    // Check if user already exists
+    let user = await this.prisma.user.findUnique({
+      where: { id: data.userId },
+      include: { profile: true },
+    });
 
-    const user = await this.prisma.user.create({
-      data: {
-        profile: {
-          create: {
-            interests: data.interests,
-            city: data.city,
-            budget: data.budget,
-            dietary: data.dietary,
+    if (!user) {
+      // Create new user with profile
+      user = await this.prisma.user.create({
+        data: {
+          id: data.userId,
+          profile: {
+            create: {
+              interests: data.interests,
+              city: data.city,
+              budget: data.budget,
+              dietary: data.dietary,
+            },
           },
         },
-      },
-      include: {
-        profile: true,
-      },
-    });
+        include: { profile: true },
+      });
+    } else if (!user.profile) {
+      // User exists but no profile - create profile
+      await this.prisma.profile.create({
+        data: {
+          userId: user.id,
+          interests: data.interests,
+          city: data.city,
+          budget: data.budget,
+          dietary: data.dietary,
+        },
+      });
+    } else {
+      // Update existing profile
+      await this.prisma.profile.update({
+        where: { userId: user.id },
+        data: {
+          interests: data.interests,
+          city: data.city,
+          budget: data.budget,
+          dietary: data.dietary,
+        },
+      });
+    }
 
     return user;
   }
 
-
-  async getProfile(userid: string) {
+  async getProfile(userId: string) {
     const user = await this.prisma.user.findUnique({
-      where: {
-        id: userid,
-      },
-      include: {
-        profile: true,
-      },
+      where: { id: userId },
+      include: { profile: true },
     });
 
-    if (!user || !user.profile) {
-      throw new Error('Profile not found');
+    if (!user) {
+      throw new Error('User not found');
     }
 
     return user;

@@ -21,6 +21,8 @@ export class EventsService {
     lat: number,
     lng: number,
     radius: number = 50, // miles
+    startDate?: string,
+    endDate?: string,
   ): Promise<TicketmasterEvent[]> {
     try {
       // Format dates as YYYY-MM-DDTHH:mm:ssZ (Ticketmaster format)
