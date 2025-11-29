@@ -91,7 +91,29 @@ export class AiService {
     });
 
     const response = completion.choices[0].message.content;
-    return JSON.parse(response || '{}');
+    const aiResponse = JSON.parse(response || '{}');
+
+    // Match events to each plan based on event names mentioned in activities
+    if (aiResponse.plans && events.length > 0) {
+      aiResponse.plans = aiResponse.plans.map((plan: any) => {
+        const planText = JSON.stringify(plan.activities).toLowerCase();
+        const matchedEvents = events.filter((event) => {
+          // Check if event name is mentioned in the plan's activities
+          const eventNameWords = event.name.toLowerCase().split(' ');
+          // Match if at least 2 significant words from event name appear in activities
+          const matches = eventNameWords.filter(
+            (word) => word.length > 3 && planText.includes(word),
+          );
+          return matches.length >= 2;
+        });
+        return {
+          ...plan,
+          events: matchedEvents,
+        };
+      });
+    }
+
+    return aiResponse;
   }
 
   private async searchRelevantEvents(

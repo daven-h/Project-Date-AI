@@ -143,6 +143,23 @@
   margin-right: 20px;
 }
 
+.interests-textarea{
+  margin-bottom:15px;
+}
+
+.location-input{
+  margin-bottom: 15px;
+}
+
+.budget-select{
+  margin-bottom: 15px;
+}
+
+.find-date-ideas-button{
+  margin-top: 20px;
+}
+
+
 
 
 @layer base {

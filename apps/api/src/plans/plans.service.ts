@@ -54,7 +54,7 @@ export class PlansService {
       userLocation: userLocation,
     });
 
-    // Save each plan to database
+    // Save each plan to database with its matched events
     const savedPlans = await Promise.all(
       aiResponse.plans.map((plan: any) =>
         this.prisma.plan.create({
@@ -67,6 +67,7 @@ export class PlansService {
             distance: plan.distance,
             priceRange: plan.priceRange,
             reason: plan.reason,
+            events: plan.events || [], // Save matched Ticketmaster events for this specific plan
           },
         }),
       ),

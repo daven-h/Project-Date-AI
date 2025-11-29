@@ -1,5 +1,16 @@
 const API_URL = 'http://localhost:4000';
 
+// Ticketmaster Event type
+export interface TicketmasterEvent {
+  name: string;
+  date: string;
+  time: string;
+  venue: string;
+  priceRange?: string;
+  url: string;
+  images?: string[];
+}
+
 // API response type
 export interface ApiDatePlan {
   id: string;
@@ -10,6 +21,7 @@ export interface ApiDatePlan {
   distance: number;
   priceRange: string;
   reason: string;
+  events?: TicketmasterEvent[];  // Ticketmaster events
   createdAt: string;
   updatedAt: string;
 }

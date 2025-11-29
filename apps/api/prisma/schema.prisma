@@ -46,7 +46,7 @@ model Plan {
   id          String   @id @default(cuid())
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   // Plan details
   title       String
   description String?
@@ -55,11 +55,12 @@ model Plan {
   distance    Float
   priceRange  String
   reason      String   // Why this was suggested
-  
+  events      Json?    // Array of Ticketmaster events
+
   // Metadata
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
+
   @@index([userId])
 }
 

@@ -101,13 +101,13 @@ export default function OnboardingPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
       {/* Interests Field */}
      <div>
-    <label htmlFor="interests" className="block text-sm font-medium text-gray-700 mb-2">
+    <label htmlFor="interests-txt" className="block text-sm font-medium text-gray-700 mb-2">
       What does your partner enjoy? *
     </label>
     <textarea
-      id="interests"
+      id="interests-txt"
       rows={3}
-      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent interests-textarea"
       placeholder="e.g., hiking, live music, trying new restaurants, art galleries..."
       value={formData.interests}
       onChange={(e) => setFormData({ ...formData, interests: e.target.value })}
@@ -121,7 +121,7 @@ export default function OnboardingPage() {
       <input
       type="text"
       id="city"
-      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent location-input"
       placeholder="e.g., New York, NY or 10001"
       value = {formData.city}
       onChange={(e) => setFormData({ ...formData, city: e.target.value})}
@@ -137,7 +137,7 @@ export default function OnboardingPage() {
 
     <select 
     id="budget"
-    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent budget-select"
     value = {formData.budget}
     onChange={(e) => setFormData({...formData, budget: e.target.value})}
     >
@@ -172,7 +172,7 @@ export default function OnboardingPage() {
   <button
     type="submit"
     disabled={isLoading}
-    className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
+    className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed find-date-ideas-button"
       >
     {isLoading ? 'Saving...' : 'Find Date Ideas'}
     </button>
