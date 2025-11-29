@@ -114,6 +114,37 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+.search-card{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.search-card:hover {
+  box-shadow: 0 20px 40px rgba(7, 20, 255, 0.2);
+}
+
+.radius-slider{
+  margin-top: 20px;
+}
+
+.search-preferences{
+  font-weight: bold;
+}
+
+.location-info{
+  margin-bottom: 15px;
+}
+
+.preferences-link{
+  margin-right: 20px;
+}
+
+
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

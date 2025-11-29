@@ -47,13 +47,23 @@ export async function submitOnboarding(data: {
 }
 
 
-export async function generateDatePlans(userId: string) {
+export async function generateDatePlans(
+    userId: string,
+    dateTime?: string,
+    radius?: number,
+    userLocation?: { lat: number; lng: number }
+) {
     const response = await fetch(`${API_URL}/plans/generate`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({userId}),
+        body: JSON.stringify({
+            userId,
+            dateTime,
+            radius,
+            userLocation
+        }),
     });
 
     if (!response.ok) {

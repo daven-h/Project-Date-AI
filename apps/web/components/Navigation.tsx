@@ -12,12 +12,12 @@ import {
 
 export default function Navigation() {
   return (
-    <nav className="border-b bg-white">
+    <nav className="border-b bg-gradient-to-r from-blue-600 to-blue-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="text-xl font-bold text-gray-900">
+            <Link href="/" className="text-xl font-bold text-white">
               Date AI
             </Link>
           </div>
@@ -25,37 +25,43 @@ export default function Navigation() {
           {/* Navigation Links */}
           <div className="flex items-center gap-6">
             <SignedIn>
-              <NavigationMenu>
-                <NavigationMenuList>
-                  <NavigationMenuItem>
-                    <Link href="/dashboard" legacyBehavior passHref>
-                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                        Dashboard
+              <div className="flex items-center gap-6">
+                <NavigationMenu>
+                  <NavigationMenuList>
+                    <NavigationMenuItem>
+                      <NavigationMenuLink asChild>
+                        <Link href="/dashboard" className={navigationMenuTriggerStyle()}>
+                          Dashboard
+                        </Link>
                       </NavigationMenuLink>
-                    </Link>
-                  </NavigationMenuItem>
-                  <NavigationMenuItem>
-                    <Link href="/onboarding" legacyBehavior passHref>
-                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                        Preferences
+                    </NavigationMenuItem>
+                  </NavigationMenuList>
+                </NavigationMenu>
+                <NavigationMenu>
+                  <NavigationMenuList>
+                    <NavigationMenuItem className='preferences-link'>
+                      <NavigationMenuLink asChild>
+                        <Link href="/onboarding" className={navigationMenuTriggerStyle()}>
+                          Preferences
+                        </Link>
                       </NavigationMenuLink>
-                    </Link>
-                  </NavigationMenuItem>
-                </NavigationMenuList>
-              </NavigationMenu>
+                    </NavigationMenuItem>
+                  </NavigationMenuList>
+                </NavigationMenu>
+              </div>
               <UserButton afterSignOutUrl="/" />
             </SignedIn>
 
             <SignedOut>
               <Link
                 href="/sign-in"
-                className="text-gray-700 hover:text-gray-900 transition-colors font-medium"
+                className="text-white hover:text-blue-100 transition-colors font-medium"
               >
                 Sign In
               </Link>
               <Link
                 href="/sign-up"
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium"
               >
                 Get Started
               </Link>
